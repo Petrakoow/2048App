@@ -29,7 +29,7 @@ class GameView{
         if (number < 0) {
             return;
         }
-        console.log(score);
+        
         this.scoreUI.textContent = score;
 
         cellElement.textContent = number;

@@ -48,11 +48,15 @@ class GameController{
     
             if (moveMade) {
                 this.model.setCell();
-                if (!this.model.hasMoveAvailable()) {
-                    alert("Игра окончена! Начать заново.");
-                    this.initializationStartGame(); 
-                }
+                this.checkLose();
             }
         });
+    }
+
+    checkLose(){
+        if (!this.model.hasMoveAvailable()) {
+            alert("Игра окончена! Начать заново.");
+            this.initializationStartGame(); 
+        }
     }
 }
