@@ -31,8 +31,40 @@ class GameModel{
         this.updateView = callback;
     }
 
-    createEmptyBoard(rows, columns){
-        return Array.from({length: rows}, () => Array(columns).fill(2));
+    bindAddNewCellView(callback){
+        this.addNewView = callback;
+    }
+
+    createEmptyBoard(rows, columns){ 
+        return Array.from({length: rows}, () => Array(columns).fill(0));
+    }
+
+    setTwoCell(){
+        if (!this.hasEmptyTile()){
+            return;
+        }
+        let found = false;
+        while (!found){
+            let rowIndex = Math.floor(Math.random() * this.rows);
+            let colIndex = Math.floor(Math.random() * this.columns);
+
+            if (this.board[rowIndex][colIndex] === 0){
+                this.board[rowIndex][colIndex] = 2;
+                this.addNewView(rowIndex, colIndex);
+                found = true;
+            }
+        }
+    }
+
+    hasEmptyTile(){
+        for (let row of this.board) {
+            for (let col of row) {
+                if (col === 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     filterZeroElements(row){
@@ -64,7 +96,47 @@ class GameModel{
             rowCells = this.slide(rowCells);
             this.board[rowIndex] = rowCells;
             for (let colIndex = 0; colIndex < this.getColumns; colIndex++) {
-                this.updateView(rowIndex, colIndex);
+                this.updateView(rowIndex, colIndex, this.score);
+            }
+        }
+    }
+
+    slideRight(){
+        for (let rowIndex = 0; rowIndex < this.getRows; rowIndex++) {
+            let rowCells = this.board[rowIndex];
+            rowCells.reverse();
+            rowCells = this.slide(rowCells);
+            rowCells.reverse();
+            this.board[rowIndex] = rowCells;
+            for (let colIndex = 0; colIndex < this.getColumns; colIndex++) {
+                this.updateView(rowIndex, colIndex, this.score);
+            }
+        }
+    }
+
+    slideUp(){
+        for (let columnIndex = 0; columnIndex < this.getColumns; columnIndex++) {
+            let row = [this.board[0][columnIndex], 
+            this.board[1][columnIndex], this.board[2][columnIndex], this.board[3][columnIndex]];
+            row = this.slide(row);
+
+            for (let rowIndex = 0; rowIndex < this.getRows; rowIndex++) {
+                this.board[rowIndex][columnIndex] = row[rowIndex];
+                this.updateView(rowIndex, columnIndex, this.score);
+            }
+        }
+    }
+
+    slideDown(){
+        for (let columnIndex = 0; columnIndex < this.getColumns; columnIndex++) {
+            let row = [this.board[0][columnIndex], 
+                this.board[1][columnIndex], this.board[2][columnIndex], this.board[3][columnIndex]];
+            row.reverse();
+            row = this.slide(row);
+            row.reverse();
+            for (let rowIndex = 0; rowIndex < this.getRows; rowIndex++) {
+                this.board[rowIndex][columnIndex] = row[rowIndex];
+                this.updateView(rowIndex, columnIndex, this.score);
             }
         }
     }
