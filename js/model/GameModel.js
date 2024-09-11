@@ -1,21 +1,36 @@
 class GameModel{
     constructor(rows, columns){
-        this.rows = rows;
-        this.columns = columns;
+        this.setRows = rows;
+        this.setColumns = columns;
         this.score = 0;
+        this.chance = 0.9;
         this.board = this.createEmptyBoard(this.getRows, this.getColumns);
     }
 
+    set setRows(rows){
+        if (!rows && Number.isInteger(rows)){
+            throw new Error("rows must be int");
+        }
+        this.rows = rows;
+    }
+
+    set setColumns(columns){
+        if (!columns && Number.isInteger(columns)){
+            throw new Error("columns must be int");
+        }
+        this.columns = columns;
+    }
+
     get getRows(){
-        if (!this.rows){
-            throw new Error("rows is 0 or undefined or null or NaN");
+        if (!this.rows && Number.isInteger(this.columns)){
+            throw new Error("rows is 0 or undefined or null or NaN or not int");
         }
         return this.rows;
     }
 
     get getColumns(){
-        if (!this.columns){
-            throw new Error("columns is 0 or undefined or null or NaN");
+        if (!this.columns && Number.isInteger(this.columns)){
+            throw new Error("columns is 0 or undefined or null or NaN or not int");
         }
         return this.columns;
     }
@@ -39,18 +54,22 @@ class GameModel{
         return Array.from({length: rows}, () => Array(columns).fill(0));
     }
 
-    setTwoCell(){
-        if (!this.hasEmptyTile()){
+    setCell(){
+        if (!this.hasEmptyTile()) {
             return;
         }
         let found = false;
-        while (!found){
+        while (!found) {
             let rowIndex = Math.floor(Math.random() * this.rows);
             let colIndex = Math.floor(Math.random() * this.columns);
+    
+            if (this.board[rowIndex][colIndex] === 0) {
+                let randomValue = Math.random();
+                let newValue = randomValue < this.chance ? 2 : 4;
 
-            if (this.board[rowIndex][colIndex] === 0){
-                this.board[rowIndex][colIndex] = 2;
-                this.addNewView(rowIndex, colIndex);
+                console.log(newValue, this.chance); 
+                this.board[rowIndex][colIndex] = newValue; 
+                this.addNewView(rowIndex, colIndex, newValue);
                 found = true;
             }
         }
@@ -139,5 +158,26 @@ class GameModel{
                 this.updateView(rowIndex, columnIndex, this.score);
             }
         }
+    }
+
+    hasMoveAvailable() {
+        if (this.hasEmptyTile()) {
+            return true;
+        }
+    
+        for (let rowIndex = 0; rowIndex < this.getRows; rowIndex++) {
+            for (let colIndex = 0; colIndex < this.getColumns; colIndex++) {
+                let current = this.board[rowIndex][colIndex];
+    
+                if (colIndex < this.getColumns - 1 && current === this.board[rowIndex][colIndex + 1]) {
+                    return true;  
+                }
+                if (rowIndex < this.getRows - 1 && current === this.board[rowIndex + 1][colIndex]) {
+                    return true; 
+                }
+            }
+        }
+    
+        return false;
     }
 }

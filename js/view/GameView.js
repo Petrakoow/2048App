@@ -46,9 +46,9 @@ class GameView{
         this.updateCell(cellElement, number, score);
     }
 
-    addCellValue(rowIndex, colIndex){
+    addCellValue(rowIndex, colIndex, value){
         const cellElement = document.getElementById(`cell-${rowIndex}-${colIndex}`);
-        cellElement.textContent = "2";
+        cellElement.textContent = value.toString();
         cellElement.classList.add("x2");
     }
 }

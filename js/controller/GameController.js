@@ -10,10 +10,13 @@ class GameController{
     }
 
     initializationStartGame(){
-        const board = this.model.getBoard;
-        this.view.renderBoard(board);
-        this.model.setTwoCell();
-        this.model.setTwoCell();
+        this.model.board = this.model.createEmptyBoard(this.model.getRows, 
+            this.model.getColumns);
+        this.model.score = 0;
+
+        this.view.renderBoard(this.model.board);
+        this.model.setCell();
+        this.model.setCell();
     }
 
     onUpdateViewChanged = (rowIndex, colIndex, score) => { 
@@ -21,31 +24,34 @@ class GameController{
         this.view.changeCellValue(rowIndex, colIndex, board, score);
     }
 
-    onAddNewCell = (rowIndex, colIndex) => {
-        this.view.addCellValue(rowIndex, colIndex);
+    onAddNewCell = (rowIndex, colIndex, value) => {
+        this.view.addCellValue(rowIndex, colIndex, value);
     }
 
     playerController(){
         document.addEventListener("keyup", (event) => {
+            let moveMade = false;
+    
             if (event.code === "ArrowLeft") {
-                console.log("влево смещение");
                 this.model.slideLeft();
-                this.model.setTwoCell();
-            }
-            else if (event.code === "ArrowRight"){
-                console.log("вправо смещение");
+                moveMade = true;
+            } else if (event.code === "ArrowRight") {
                 this.model.slideRight();
-                this.model.setTwoCell();
-            }
-            else if (event.code === "ArrowUp"){
-                console.log("вверх смещение");
+                moveMade = true;
+            } else if (event.code === "ArrowUp") {
                 this.model.slideUp();
-                this.model.setTwoCell();
-            }
-            else if (event.code === "ArrowDown"){
-                console.log("вниз смещение");
+                moveMade = true;
+            } else if (event.code === "ArrowDown") {
                 this.model.slideDown();
-                this.model.setTwoCell();
+                moveMade = true;
+            }
+    
+            if (moveMade) {
+                this.model.setCell();
+                if (!this.model.hasMoveAvailable()) {
+                    alert("Игра окончена! Начать заново.");
+                    this.initializationStartGame(); 
+                }
             }
         });
     }
