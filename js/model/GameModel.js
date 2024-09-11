@@ -32,7 +32,7 @@ class GameModel{
     }
 
     createEmptyBoard(rows, columns){
-        return Array.from({length: rows}, () => Array(columns).fill(0));
+        return Array.from({length: rows}, () => Array(columns).fill(2));
     }
 
     filterZeroElements(row){
@@ -43,10 +43,10 @@ class GameModel{
         row = this.filterZeroElements(row);
 
         for (let index = 0; index < row.length - 1; index++) {
-            if (row[i] == row[i + 1]){
-                row[i] *= 2;
-                row[i+1] = 0;
-                this.score += row[i];
+            if (row[index] == row[index + 1]){
+                row[index] *= 2;
+                row[index + 1] = 0;
+                this.score += row[index];
             }
         }
 
@@ -58,7 +58,7 @@ class GameModel{
         return row;
     }
 
-    slideLeft(updateView){
+    slideLeft(){
         for (let rowIndex = 0; rowIndex < this.getRows; rowIndex++) {
             let rowCells = this.board[rowIndex];
             rowCells = this.slide(rowCells);
